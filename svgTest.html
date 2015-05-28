@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<html>
+	<head>
+		<title>SVG_Test</title>
+	</head>
+	<body>
+		<svg id="test" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" version="1.1">
+			<!--<rect x="70" y="70" width="100" height="100" style="fill:rgb(255,255,50);stroke-width:1; stroke:rgb(0,0,0)"/>
+			<circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="rgb(50,0,0)"/>
+			
+			<rect width="200" height="200" style="fill:rgb(0,255,255);stroke-width:1; stroke:rgb(0,0,0)"/>
+			<ellipse cx="300" cy="150" rx="100" ry="50" style="fill:rgb(200,100,50); stroke:rgb(0,0,100);stroke-width:2"/>-->
+			<path id="14327177656494655MPolyline" MStrName="com.mapbar.maplet.MPolyline" stroke-linejoin="round" stroke-linecap="round" stroke="rgb(255, 0, 0)" stroke-width="5px" stroke-opacity="0.6" style="cursor: default;" fill-opacity="0.3" fill="rgb(255, 0, 0)" _dragmap="true" _overlay="polyline" oid="14327177656494655MPolyline" d=" M74,70 L331,38 L112,328 Z" marker-end=""></path>
+
+			<path id="14327176926483831MPolyline" MStrName="com.mapbar.maplet.MPolyline" stroke-linejoin="round" stroke-linecap="round" stroke="rgb(255, 0, 0)" stroke-width="5px" stroke-opacity="0.6" style="cursor: default;" fill-opacity="0.3" fill="rgb(255, 0, 0)" _dragmap="true" _overlay="polyline" oid="14327176926483831MPolyline" d=" M135,119 L206,556 L674,175 Z" marker-end=""></path>
+		</svg>
+	</body>
+
+	<script type="text/javascript">
+		function $$(str){
+			return document.getElementById(str);
+		}
+
+		function mergePath(){
+			var down = $$("14327176926483831MPolyline"),
+				up = $$("14327177656494655MPolyline");
+
+
+			var downPath = getPointsArray(down),
+				upPath = getPointsArray(up);
+
+			for( var i=0,len=downPath.length;i<len;i++){
+				
+			}	
+
+			return false;	
+		}
+
+		//应该换成lnglat
+		function getPointsArray(dom){
+			var arry = [];
+			var d = dom.getAttribute("d");
+			//先删除Z,M,L
+			d = d.replace(/Z/g,"");
+			d = d.replace(/M/g,"");
+			d = d.replace(/L/g,"");
+
+			d = trim(d);
+			var tmpArray = d.split(" ");
+
+			for( var i=0,len=tmpArray.length;i<len;i++){
+				var obj = {};
+				var tArray = tmpArray[i].split(",");
+				obj.x = tArray[0];
+				obj.y = tArray[1];
+				arry.push(obj);
+			}
+
+			return arry;
+		}
+		function trim(str) { 
+			var newStr = str.replace(/(^\s*)|(\s*$)/g,'') 
+			return newStr; 
+		}
+
+		//ab是一组起点终点, cd是另外一组
+		function segmentsIntr(a, b, c, d){
+			/** 1 解线性方程组, 求线段交点. **/
+			// 如果分母为0 则平行或共线, 不相交
+		    var denominator = (b.y - a.y)*(d.x - c.x) - (a.x - b.x)*(c.y - d.y);
+		    if (denominator==0) {
+		        return false;
+		    }
+			// 线段所在直线的交点坐标 (x , y)    
+		    var x = ( (b.x - a.x) * (d.x - c.x) * (c.y - a.y) 
+		                + (b.y - a.y) * (d.x - c.x) * a.x 
+		                - (d.y - c.y) * (b.x - a.x) * c.x ) / denominator ;
+		    var y = -( (b.y - a.y) * (d.y - c.y) * (c.x - a.x) 
+		                + (b.x - a.x) * (d.y - c.y) * a.y 
+		                - (d.x - c.x) * (b.y - a.y) * c.y ) / denominator;
+			/** 2 判断交点是否在两条线段上 **/
+		    if (// 交点在线段1上
+		        (x - a.x) * (x - b.x) <= 0 && (y - a.y) * (y - b.y) <= 0
+		        // 且交点也在线段2上
+		         && (x - c.x) * (x - d.x) <= 0 && (y - c.y) * (y - d.y) <= 0
+		        ){
+		        // 返回交点p
+		        return {
+	                x :  x,
+	                y :  y
+	            }
+		    }
+		    //否则不相交
+		    return false
+		}
+
+	</script>
+</html>

@@ -70,3 +70,25 @@ function getLength(point1_x, point1_y, point2_x, point2_y) {
 //http://www.cnblogs.com/zhangchaoyang/articles/2668562.html
 //谈谈"求线段交点"的几种算法(js实现,完整版)
 //http://fins.iteye.com/blog/1522259
+
+
+//add by rt : 两bounds是否有交集, 用于判断折线是否在屏幕范围内
+var isBoundsCross = function(bd1,bd2){
+
+    var lineMinLon = Math.min(bd1.maxpt.lon, bd1.minpt.lon),
+        lineMaxLon = Math.max(bd1.maxpt.lon, bd1.minpt.lon),
+        lineMinLat = Math.min(bd1.maxpt.lat, bd1.minpt.lat),
+        lineMaxLat = Math.max(bd1.maxpt.lat, bd1.minpt.lat);
+
+    var mapMinLon = Math.min(bd2.maxpt.lon, bd2.minpt.lon),
+        mapMaxLon = Math.max(bd2.maxpt.lon, bd2.minpt.lon),
+        mapMinLat = Math.min(bd2.maxpt.lat, bd2.minpt.lat),
+        mapMaxLat = Math.max(bd2.maxpt.lat, bd2.minpt.lat);
+    
+    var isCross = (Math.abs((lineMinLon+lineMaxLon)-(mapMinLon+mapMaxLon))<(lineMaxLon-lineMinLon+mapMaxLon-mapMinLon) 
+                && Math.abs((lineMinLat+lineMaxLat)-(mapMinLat+mapMaxLat))<(lineMaxLat-lineMinLat+mapMaxLat-mapMinLat));
+    
+    console.log("isCross==>"+isCross);
+
+    return isCross;
+}

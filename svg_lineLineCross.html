@@ -3,43 +3,87 @@
 <html>
 	<head>
 		<title>SVG_Test</title>
+		<style type="text/css">
+			#container{
+				position: relative;
+				border:"#555 solid 1px";
+				width : 500px;
+				height:500px;
+			}
+			#svgContainer {
+				position:absolute;
+				width : 100%;
+				height:100%;
+			}
+			#svgRuler{
+				position:absolute;
+				width : 100%;
+				height:100%;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="container">
 			
-			<svg id="test" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" version="1.1">
-				<path id="1" stroke-linejoin="round" stroke-linecap="round" stroke="rgb(255, 0, 0)" stroke-width="5px" stroke-opacity="0.6" style="cursor: default;" fill-opacity="0.3" fill="rgb(255, 0, 0)" d=" M100,100 L100,210 Z"></path>
-
-				<path id="2" stroke-linejoin="round" stroke-linecap="round" stroke="rgb(255, 0, 0)" stroke-width="5px" stroke-opacity="0.6" style="cursor: default;" fill-opacity="0.3" fill="rgb(255, 0, 0)" d=" M150,150 L50,250 Z" marker-end=""></path>
-			</svg>
-
 		</div>
-		
 	</body>
 
 	<script type="text/javascript" src="util.js"></script>
 	<script type="text/javascript" src="svgTool.js"></script>
 	<script type="text/javascript" src="geometryTool.js"></script>
 	<script type="text/javascript">
+		
+		//标尺
+		createSVGContainer("svgRuler","container");
+		createSVGRuler("svgRuler","container");
 
-		mergePath();
-		function mergePath(){
-			var down = $$("1"),
-				up = $$("2");
+		//实验折线
+		createSVGContainer("svgContainer","container");
+		drawLine([{x:30,y:100},{x:150,y:210}],null,"svgContainer");
+		drawLine([{x:150,y:150},{x:50,y:250}],null,"svgContainer");
+		drawLine([{x:50,y:100},{x:90,y:250},{x:150,y:170}],null,"svgContainer");
 
-			var downPath = getPointsArray(down),
-				upPath = getPointsArray(up);
+		//折线求焦点
+		getAllCross("svgContainer");
+		function getAllCross(containerId) {
+			var svgContainer = $$(containerId);
+			var paths = svgContainer.getElementsByTagName("path");
+			//遍历匹配
+			for (var i = 0, len = paths.length; i < len; i++) {
+				var one = paths[i];
 
-			for( var i=0,len=downPath.length;i<len;i++){
-
-				var p = getCrossPoint(downPath[0], downPath[1], upPath[0], upPath[1]);
-				if (p) {
-					pointAmark(p);
+				for (var j = i + 1; j < len; j++) {
+					var two = paths[j];
+					getCrossOfTwoPath(one, two);
 				}
+			}
+		}
+		//两折线求焦点
+		function getCrossOfTwoPath(one,two){
+			var onePath = getPointsArray(one),
+				twoPath = getPointsArray(two);
 
+			for( var i=0,len=onePath.length-1;i<len;i++){
+				var startPoint1 = onePath[i],
+					endPoint1 = onePath[i+1];
+				if( !endPoint1 ){
+					continue;
+				}
+				
+				for( var j=0,len=twoPath.length-1;j<len;j++){
+					var startPoint2 = twoPath[j],
+						endPoint2 = twoPath[j+1];
+					if( !endPoint2 ){
+						continue;
+					}
+					//遍历path 拿到4个点, 求焦点
+					var p = getCrossPoint(startPoint1, endPoint1, startPoint2, endPoint2);
+					if (p) {
+						pointAmark(p);
+					}
+				}
 			}
 			return false;	
 		}
-
 	</script>
 </html>

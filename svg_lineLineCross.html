@@ -7,8 +7,8 @@
 			#container{
 				position: relative;
 				border:"#555 solid 1px";
-				width : 500px;
-				height:500px;
+				width : 350px;
+				height:350px;
 			}
 			#svgContainer {
 				position:absolute;
@@ -28,26 +28,37 @@
 		</div>
 	</body>
 
-	<script type="text/javascript" src="util.js"></script>
-	<script type="text/javascript" src="svgTool.js"></script>
-	<script type="text/javascript" src="geometryTool.js"></script>
+	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript" src="js/draw/Svg.js"></script>
+	<script type="text/javascript" src="js/geometry/Point.js"></script>
+	<script type="text/javascript" src="js/geometry/Line.js"></script>
+	<script type="text/javascript" src="js/geometry/Lable.js"></script>
+
+	<script type="text/javascript" src="js/geometry/geometryTool.js"></script>
 	<script type="text/javascript">
-		
-		//标尺
-		createSVGContainer("svgRuler","container");
-		createSVGRuler("svgRuler","container");
 
 		//实验折线
-		createSVGContainer("svgContainer","container");
-		drawLine([{x:30,y:100},{x:150,y:210}],null,"svgContainer");
-		drawLine([{x:150,y:150},{x:50,y:250}],null,"svgContainer");
-		drawLine([{x:50,y:100},{x:90,y:250},{x:150,y:170}],null,"svgContainer");
+		var svg = new Svg("svgContainer", "container");
+		svg.createSVGRuler(); //TODO 设置间距,字体等
+		var _SVG = svg;//缓存默认svg画板
 
+		var line1 = new rtLine([{x:80,y:100},{x:200,y:210}]);
+		line1.draw();
+		var line2 = new rtLine([{x:200,y:150},{x:100,y:250}]);
+		line2.draw();
+		var line3 = new rtLine([{x:100,y:100},{x:140,y:250},{x:200,y:170}]);
+		line3.draw();
+
+		var lines =[];
+		lines.push(line1);
+		lines.push(line2);
+		lines.push(line3);
+	
+		
 		//折线求焦点
-		getAllCross("svgContainer");
-		function getAllCross(containerId) {
-			var svgContainer = $$(containerId);
-			var paths = svgContainer.getElementsByTagName("path");
+		getAllCross(lines);
+		function getAllCross(lines) {
+			var paths = lines;
 			//遍历匹配
 			for (var i = 0, len = paths.length; i < len; i++) {
 				var one = paths[i];
@@ -58,32 +69,36 @@
 				}
 			}
 		}
-		//两折线求焦点
-		function getCrossOfTwoPath(one,two){
-			var onePath = getPointsArray(one),
-				twoPath = getPointsArray(two);
+		function getCrossOfTwoPath(one, two) {
+			var onePath = one.points,
+				twoPath = two.points;
 
-			for( var i=0,len=onePath.length-1;i<len;i++){
+			for (var i = 0, len = onePath.length - 1; i < len; i++) {
 				var startPoint1 = onePath[i],
-					endPoint1 = onePath[i+1];
-				if( !endPoint1 ){
+					endPoint1 = onePath[i + 1];
+				if (!endPoint1) {
 					continue;
 				}
-				
-				for( var j=0,len=twoPath.length-1;j<len;j++){
+
+				for (var j = 0, len = twoPath.length - 1; j < len; j++) {
 					var startPoint2 = twoPath[j],
-						endPoint2 = twoPath[j+1];
-					if( !endPoint2 ){
+						endPoint2 = twoPath[j + 1];
+					if (!endPoint2) {
 						continue;
 					}
 					//遍历path 拿到4个点, 求焦点
-					var p = getCrossPoint(startPoint1, endPoint1, startPoint2, endPoint2);
-					if (p) {
-						pointAmark(p);
+					var point = getCrossPoint(startPoint1, endPoint1, startPoint2, endPoint2);
+					if (point) {
+
+						var pt = new rtPoint(point.x, point.y);
+						pt.draw();
+						var str = pt.toString(4);
+						var text = new rtLable(pt, str);
+						text.draw();
 					}
 				}
 			}
-			return false;	
+			return false;
 		}
 	</script>
 </html>

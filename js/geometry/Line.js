@@ -32,25 +32,3 @@ rtLine.prototype = {
 
 	}
 }
-/*应该换成lnglat
-function getPointsArray(dom){
-    var arry = [];
-    var d = dom.getAttribute("d");
-    //先删除Z,M,L
-    d = d.replace(/Z/g,"");
-    d = d.replace(/M/g,"");
-    d = d.replace(/L/g,"");
-
-    d = trim(d);
-    var tmpArray = d.split(" ");
-
-    for( var i=0,len=tmpArray.length;i<len;i++){
-        var obj = {};
-        var tArray = tmpArray[i].split(",");
-        obj.x = tArray[0];
-        obj.y = tArray[1];
-        arry.push(obj);
-    }
-
-    return arry;
-}*/

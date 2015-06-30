@@ -7,13 +7,14 @@
 			#container{
 				position: relative;
 				border:"#555 solid 1px";
-				width : 350px;
-				height:350px;
+				width : 500px;
+				height:500px;
 			}
 			#svgContainer {
 				position:absolute;
 				width : 100%;
 				height:100%;
+				border: 1px red dashed;
 			}
 			#svgRuler{
 				position:absolute;
@@ -29,19 +30,28 @@
 	</body>
 
 	<script type="text/javascript" src="js/util.js"></script>
-	<script type="text/javascript" src="js/draw/Svg.js"></script>
+	
 	<script type="text/javascript" src="js/geometry/Point.js"></script>
 	<script type="text/javascript" src="js/geometry/Line.js"></script>
 	<script type="text/javascript" src="js/geometry/Lable.js"></script>
+	
+	<script type="text/javascript" src="js/draw/Svg.js"></script>
 
 	<script type="text/javascript" src="js/geometry/geometryTool.js"></script>
 	<script type="text/javascript">
 
 		//实验折线
-		var svg = new Svg("svgContainer", "container");
+		var offest = {
+			x:-180,
+			y:-180
+		}
+		var svg = new Svg("svgContainer", "container",offest);
 		svg.createSVGRuler(); //TODO 设置间距,字体等
 		var _SVG = svg;//缓存默认svg画板
 
+		//测试点
+		svg.drawPoint({x:100,y:100});
+		
 		var line1 = new rtLine([{x:80,y:100},{x:200,y:210}]);
 		line1.draw();
 		var line2 = new rtLine([{x:200,y:150},{x:100,y:250}]);

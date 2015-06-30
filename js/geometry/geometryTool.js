@@ -85,3 +85,7 @@ var isBoundsCross = function(bd1, bd2) {
 
     return isCross;
 }
+
+
+
+//TODO 线夹角, 过线截取, 判断是否是凹多边形(内角>180度)
